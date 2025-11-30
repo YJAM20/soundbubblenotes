@@ -4,20 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../models/note_model.dart';
 
-const List<Color> kBubblePalette = [
-  Color(0xFFEF5350), // red
-  Color(0xFFAB47BC), // purple
-  Color(0xFF5C6BC0), // indigo
-  Color(0xFF26A69A), // teal
-  Color(0xFFFFCA28), // amber
-  Color(0xFFFF7043), // deep orange
-];
-
-Color pickRandomBubbleColor() {
-  final random = math.Random();
-  return kBubblePalette[random.nextInt(kBubblePalette.length)];
-}
-
 /// A single animated bubble representing one note.
 class BubbleWidget extends StatefulWidget {
   final SoundNote note;

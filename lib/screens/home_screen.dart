@@ -6,7 +6,9 @@ import 'package:provider/provider.dart';
 import '../models/note_model.dart';
 import '../providers/notes_provider.dart';
 import '../services/audio_service.dart';
+import '../utils/app_colors.dart';
 import '../widgets/bubble_widget.dart';
+import '../widgets/record_button.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -285,7 +287,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             left: 0,
             right: 0,
             bottom: 32,
-            child: Center(child: _buildRecordButton()),
+            child: Center(
+                child: RecordButton(
+                  isRecording: _isRecording,
+                  progress: _recordProgress,
+                  onTap: _toggleRecording,
+                )
+            ),
           ),
         ],
       );
@@ -331,7 +339,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           left: 0,
           right: 0,
           bottom: 32,
-          child: Center(child: _buildRecordButton()),
+          child: Center(
+              child: RecordButton(
+                isRecording: _isRecording,
+                progress: _recordProgress,
+                onTap: _toggleRecording,
+              )
+          ),
         ),
       ],
     );
@@ -350,95 +364,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         borderRadius: BorderRadius.circular(100),
       ),
       child: Icon(icon, color: Colors.white, size: 28),
-    );
-  }
-
-  Widget _buildRecordButton() {
-    final theme = Theme.of(context);
-    final color = theme.colorScheme.primaryContainer;
-    final onColor = theme.colorScheme.onPrimaryContainer;
-
-    return GestureDetector(
-      onTap: _toggleRecording,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        padding: EdgeInsets.symmetric(
-            horizontal: _isRecording ? 32 : 24,
-            vertical: 16
-        ),
-        decoration: BoxDecoration(
-          color: _isRecording ? Colors.redAccent.withOpacity(0.2) : Colors.black54,
-          borderRadius: BorderRadius.circular(48),
-          border: Border.all(
-            color: _isRecording ? Colors.redAccent : Colors.white24,
-            width: 2,
-          ),
-          boxShadow: _isRecording ? [
-            BoxShadow(color: Colors.redAccent.withOpacity(0.4), blurRadius: 20, spreadRadius: 2)
-          ] : [],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _RecordingIndicator(
-              active: _isRecording,
-              progress: _recordProgress,
-              color: _isRecording ? Colors.redAccent : onColor,
-            ),
-            const SizedBox(width: 16),
-            Text(
-              _isRecording ? 'Tap to Stop' : 'Tap to Record',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: _isRecording ? Colors.redAccent : Colors.white,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _RecordingIndicator extends StatelessWidget {
-  final bool active;
-  final double progress;
-  final Color color;
-
-  const _RecordingIndicator({
-    required this.active,
-    required this.progress,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    const size = 24.0;
-    return SizedBox(
-      width: size,
-      height: size,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          if (active)
-            CircularProgressIndicator(
-              value: progress,
-              strokeWidth: 3,
-              color: color,
-              backgroundColor: color.withOpacity(0.2),
-            ),
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            width: active ? 10 : 12,
-            height: active ? 10 : 12,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(active ? 2 : 10),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
