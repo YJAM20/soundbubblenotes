@@ -15,7 +15,6 @@ class RecordButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = theme.colorScheme.primaryContainer;
     final onColor = theme.colorScheme.onPrimaryContainer;
 
     return GestureDetector(
@@ -27,7 +26,9 @@ class RecordButton extends StatelessWidget {
           vertical: 16,
         ),
         decoration: BoxDecoration(
-          color: isRecording ? Colors.redAccent.withOpacity(0.2) : Colors.black54,
+          color: isRecording
+              ? Colors.redAccent.withValues(alpha: 0.2)
+              : Colors.black54,
           borderRadius: BorderRadius.circular(48),
           border: Border.all(
             color: isRecording ? Colors.redAccent : Colors.white24,
@@ -36,7 +37,7 @@ class RecordButton extends StatelessWidget {
           boxShadow: isRecording
               ? [
                   BoxShadow(
-                    color: Colors.redAccent.withOpacity(0.4),
+                    color: Colors.redAccent.withValues(alpha: 0.4),
                     blurRadius: 20,
                     spreadRadius: 2,
                   )
@@ -92,7 +93,7 @@ class _RecordingIndicator extends StatelessWidget {
               value: progress,
               strokeWidth: 3,
               color: color,
-              backgroundColor: color.withOpacity(0.2),
+              backgroundColor: color.withValues(alpha: 0.2),
             ),
           AnimatedContainer(
             duration: const Duration(milliseconds: 200),

@@ -54,21 +54,21 @@ class ArchivedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Use selector for better performance
-    final notes = context.select<NotesProvider, List<SoundNote>>(
-            (p) => p.archivedNotes
-    );
+    final notes =
+        context.select<NotesProvider, List<SoundNote>>((p) => p.archivedNotes);
 
     if (notes.isEmpty) {
       return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.archive_outlined, size: 64, color: Colors.white.withOpacity(0.2)),
+            Icon(Icons.archive_outlined,
+                size: 64, color: Colors.white.withValues(alpha: 0.2)),
             const SizedBox(height: 16),
             Text(
               'No archived notes.',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.5),
+                color: Colors.white.withValues(alpha: 0.5),
                 fontSize: 16,
               ),
             ),
@@ -88,14 +88,14 @@ class ArchivedScreen extends StatelessWidget {
             key: ValueKey(note.id),
             direction: DismissDirection.endToStart,
             confirmDismiss: (direction) async {
-               // Optional: add confirmation dialog here
-               return true;
+              // Optional: add confirmation dialog here
+              return true;
             },
             onDismissed: (_) async {
               await context.read<NotesProvider>().deleteNote(note);
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                   const SnackBar(content: Text('Note deleted permanently')),
+                  const SnackBar(content: Text('Note deleted permanently')),
                 );
               }
             },
@@ -103,14 +103,14 @@ class ArchivedScreen extends StatelessWidget {
               alignment: Alignment.centerRight,
               padding: const EdgeInsets.only(right: 20),
               decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.8),
+                color: Colors.red.withValues(alpha: 0.8),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(Icons.delete_outline, color: Colors.white),
             ),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
+                color: Colors.white.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.white10),
               ),
@@ -132,7 +132,7 @@ class ArchivedScreen extends StatelessWidget {
                   '${note.durationSeconds.toStringAsFixed(1)}s • ${_formatDate(note.createdAt)}',
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.white.withValues(alpha: 0.5),
                   ),
                 ),
                 trailing: IconButton(
@@ -149,6 +149,6 @@ class ArchivedScreen extends StatelessWidget {
   }
 
   String _formatDate(DateTime dt) {
-    return '${dt.year}-${dt.month.toString().padLeft(2,'0')}-${dt.day.toString().padLeft(2,'0')}';
+    return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
   }
 }

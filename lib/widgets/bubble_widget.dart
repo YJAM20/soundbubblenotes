@@ -55,7 +55,8 @@ class _BubbleWidgetState extends State<BubbleWidget>
       child: AnimatedBuilder(
         animation: _controller,
         builder: (context, child) {
-          final sway = math.sin(_controller.value * 2 * math.pi + _phaseShift) * 6.0;
+          final sway =
+              math.sin(_controller.value * 2 * math.pi + _phaseShift) * 6.0;
           return Transform.translate(
             offset: Offset(0, sway),
             child: child,
@@ -68,15 +69,15 @@ class _BubbleWidgetState extends State<BubbleWidget>
             shape: BoxShape.circle,
             gradient: RadialGradient(
               colors: [
-                color.withOpacity(0.8),
-                color.withOpacity(0.95),
+                color.withValues(alpha: 0.8),
+                color.withValues(alpha: 0.95),
               ],
               center: const Alignment(-0.3, -0.3),
               radius: 0.8,
             ),
             boxShadow: [
               BoxShadow(
-                color: color.withOpacity(0.3),
+                color: color.withValues(alpha: 0.3),
                 blurRadius: 12,
                 spreadRadius: 2,
                 offset: const Offset(0, 4),
@@ -94,7 +95,7 @@ class _BubbleWidgetState extends State<BubbleWidget>
                   width: diameter * 0.15,
                   height: diameter * 0.1,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withValues(alpha: 0.3),
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -102,7 +103,7 @@ class _BubbleWidgetState extends State<BubbleWidget>
               Icon(
                 Icons.play_arrow_rounded,
                 size: diameter * 0.35,
-                color: Colors.white.withOpacity(0.9),
+                color: Colors.white.withValues(alpha: 0.9),
               ),
               Positioned(
                 bottom: diameter * 0.2,
@@ -113,7 +114,7 @@ class _BubbleWidgetState extends State<BubbleWidget>
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(

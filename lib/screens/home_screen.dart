@@ -19,7 +19,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   static const Duration _maxDuration = Duration(seconds: 15);
-  
+
   bool _isRecording = false;
   DateTime? _recordStart;
   Timer? _timer;
@@ -41,7 +41,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // Stop recording if app goes to background
-    if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
       if (_isRecording) {
         _stopRecording(save: false); // Discard if interrupted unexpectedly
       }
@@ -50,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   Future<void> _startRecording() async {
     final audioService = context.read<AudioService>();
-    
+
     // Stop playback to avoid feedback
     await audioService.stopPlayback();
 
@@ -76,11 +77,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
       if (!_isRecording || _recordStart == null) return;
-      
+
       final elapsed = DateTime.now().difference(_recordStart!);
       final t = (elapsed.inMilliseconds / _maxDuration.inMilliseconds)
           .clamp(0.0, 1.0);
-      
+
       setState(() {
         _recordProgress = t;
       });
@@ -97,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
     final start = _recordStart;
     final audioService = context.read<AudioService>();
-    
+
     setState(() {
       _isRecording = false;
       _recordStart = null;
@@ -105,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     });
 
     final path = await audioService.stopRecording();
-    
+
     if (!save || path == null || start == null) {
       if (path != null) await audioService.deleteFile(path);
       return;
@@ -129,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       durationSeconds: seconds,
       createdAt: DateTime.now(),
       archived: false,
-      colorValue: pickRandomBubbleColor().value,
+      colorValue: pickRandomBubbleColor().toARGB32(),
     );
 
     if (mounted) {
@@ -149,21 +150,24 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     context.read<NotesProvider>().playNote(note);
   }
 
-  Future<void> _onBubbleDismissed(DismissDirection direction, SoundNote note) async {
+  Future<void> _onBubbleDismissed(
+      DismissDirection direction, SoundNote note) async {
     final provider = context.read<NotesProvider>();
-    
+
     if (direction == DismissDirection.startToEnd) {
       // Delete
       await provider.deleteNote(note);
       if (mounted) {
-         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Note deleted')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Note deleted')));
       }
     } else if (direction == DismissDirection.endToStart) {
       // Archive
       final updated = note.copyWith(archived: true);
       await provider.updateNote(updated);
-       if (mounted) {
-         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Note archived')));
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Note archived')));
       }
     }
   }
@@ -241,7 +245,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               child: const Text('Cancel'),
             ),
             FilledButton(
-              onPressed: () => Navigator.of(context).pop(controller.text.trim()),
+              onPressed: () =>
+                  Navigator.of(context).pop(controller.text.trim()),
               child: const Text('Save'),
             ),
           ],
@@ -259,9 +264,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     // Use selector to rebuild ONLY when activeNotes changes.
     // This prevents the entire screen from rebuilding unnecessarily.
-    final notes = context.select<NotesProvider, List<SoundNote>>(
-        (p) => p.activeNotes
-    );
+    final notes = context
+        .select<NotesProvider, List<SoundNote>>((p) => p.activeNotes);
 
     if (notes.isEmpty) {
       return Stack(
@@ -271,29 +275,30 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.mic_none_rounded, size: 48, color: Colors.white.withOpacity(0.3)),
+                Icon(Icons.mic_none_rounded,
+                    size: 48,
+                    color: Colors.white.withValues(alpha: 0.3)),
                 const SizedBox(height: 16),
                 Text(
                   'Tap record to create a bubble',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.white.withValues(alpha: 0.5),
                     fontSize: 16,
                   ),
                 ),
               ],
             ),
           ),
-           Positioned(
+          Positioned(
             left: 0,
             right: 0,
             bottom: 32,
             child: Center(
                 child: RecordButton(
-                  isRecording: _isRecording,
-                  progress: _recordProgress,
-                  onTap: _toggleRecording,
-                )
-            ),
+              isRecording: _isRecording,
+              progress: _recordProgress,
+              onTap: _toggleRecording,
+            )),
           ),
         ],
       );
@@ -314,16 +319,17 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 return Dismissible(
                   key: ValueKey(note.id),
                   direction: DismissDirection.horizontal,
-                  onDismissed: (direction) => _onBubbleDismissed(direction, note),
+                  onDismissed: (direction) =>
+                      _onBubbleDismissed(direction, note),
                   background: _buildDismissBackground(
                     alignment: Alignment.centerLeft,
                     icon: Icons.delete_outline,
-                    color: Colors.red.withOpacity(0.8),
+                    color: Colors.red.withValues(alpha: 0.8),
                   ),
                   secondaryBackground: _buildDismissBackground(
                     alignment: Alignment.centerRight,
                     icon: Icons.archive_outlined,
-                    color: Colors.blueGrey.withOpacity(0.8),
+                    color: Colors.blueGrey.withValues(alpha: 0.8),
                   ),
                   child: GestureDetector(
                     onTap: () => _onBubbleTap(note),
@@ -341,11 +347,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           bottom: 32,
           child: Center(
               child: RecordButton(
-                isRecording: _isRecording,
-                progress: _recordProgress,
-                onTap: _toggleRecording,
-              )
-          ),
+            isRecording: _isRecording,
+            progress: _recordProgress,
+            onTap: _toggleRecording,
+          )),
         ),
       ],
     );

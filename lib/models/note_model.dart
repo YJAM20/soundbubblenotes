@@ -23,8 +23,9 @@ class SoundNote {
   Color get color => Color(colorValue);
 
   String get displayLabel => label ?? _formatTimestamp(createdAt);
-  
-  Duration get duration => Duration(milliseconds: (durationSeconds * 1000).round());
+
+  Duration get duration =>
+      Duration(milliseconds: (durationSeconds * 1000).round());
 
   SoundNote copyWith({
     String? id,
